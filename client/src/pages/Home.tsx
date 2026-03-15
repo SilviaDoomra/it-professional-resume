@@ -37,7 +37,7 @@ const CHARCOAL = "#2D2D2D";
 const MUTED = "#6B6B6B";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/exec-hero-bg-FQ89QoftLkFwBGe5K5ecm7.webp";
-const PORTRAIT = "https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/exec-portrait-frame-M7aD5vyzYShyfwYaojQxjF.webp";
+const PORTRAIT = "https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/silvia-profile_4d52f489.jpeg";
 
 const NAV = [
   { label: "About", href: "#about" },
@@ -538,7 +538,7 @@ export default function Home() {
                   src={PORTRAIT}
                   alt="Silvia Doomra — Senior Technical Program Manager"
                   className="relative z-10 w-72 lg:w-80 object-cover"
-                  style={{ filter: "grayscale(15%)" }}
+                  style={{ objectFit: "cover", objectPosition: "center top" }}
                 />
               </div>
             </div>

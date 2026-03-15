@@ -388,17 +388,17 @@ export default function Home() {
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: GREEN, fontFamily: "'Lato', sans-serif" }}>
               SD
             </div>
-            <span className="hidden sm:block font-semibold text-sm tracking-wide" style={{ color: GREEN, fontFamily: "'Lato', sans-serif" }}>
+            <span className="hidden lg:block font-semibold text-sm tracking-wide" style={{ color: GREEN, fontFamily: "'Lato', sans-serif" }}>
               Silvia Doomra
             </span>
           </a>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-5 lg:gap-7">
             {NAV.map((n) => (
               <a
                 key={n.href}
                 href={n.href}
-                className="nav-link text-xs uppercase tracking-widest font-semibold transition-colors"
+                className="nav-link text-[11px] uppercase tracking-widest font-semibold transition-colors whitespace-nowrap"
                 style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = GREEN)}
                 onMouseLeave={(e) => (e.currentTarget.style.color = MUTED)}

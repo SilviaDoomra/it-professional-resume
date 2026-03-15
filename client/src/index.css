@@ -1,3 +1,10 @@
+/**
+ * Executive Linen Design System
+ * Movement: Scandinavian Minimalism × Executive Consulting
+ * Colors: Warm cream (#FAF8F4) base, Forest green (#1B4332) primary, Gold (#C9A84C) accent
+ * Typography: Cormorant Garamond (display) + Lato (body) + Playfair Display Italic (quotes)
+ */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -40,56 +47,54 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  
-  /* Custom fonts for Kinetic Data Architecture design */
-  --font-heading: 'Archivo Black', sans-serif;
-  --font-body: 'Manrope', sans-serif;
-  --font-code: 'Fira Code', monospace;
 }
 
-/* Kinetic Data Architecture Theme - Dark charcoal with electric accents */
 :root {
-  /* Brand colors */
-  --electric-blue: #0066FF;
-  --hot-magenta: #FF0080;
-  --laser-yellow: #FFE600;
-  --charcoal: #1E1E24;
-  --charcoal-light: #2A2A32;
-  
-  /* Theme tokens */
-  --primary: var(--electric-blue);
-  --primary-foreground: oklch(1 0 0);
-  --sidebar-primary: var(--electric-blue);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --chart-1: var(--electric-blue);
-  --chart-2: var(--hot-magenta);
-  --chart-3: var(--laser-yellow);
-  --chart-4: #00CCFF;
-  --chart-5: #FF3366;
-  --radius: 0.5rem;
-  --background: oklch(0.14 0.01 270);
-  --foreground: oklch(0.95 0.005 270);
-  --card: oklch(0.18 0.01 270);
-  --card-foreground: oklch(0.95 0.005 270);
-  --popover: oklch(0.18 0.01 270);
-  --popover-foreground: oklch(0.95 0.005 270);
-  --secondary: oklch(0.22 0.01 270);
-  --secondary-foreground: oklch(0.85 0.005 270);
-  --muted: oklch(0.25 0.01 270);
-  --muted-foreground: oklch(0.65 0.01 270);
-  --accent: var(--electric-blue);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.55 0.25 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.3 0.01 270);
-  --input: oklch(0.3 0.01 270);
-  --ring: var(--electric-blue);
-  --sidebar: oklch(0.16 0.01 270);
-  --sidebar-foreground: oklch(0.95 0.005 270);
-  --sidebar-accent: oklch(0.22 0.01 270);
-  --sidebar-accent-foreground: oklch(0.95 0.005 270);
-  --sidebar-border: oklch(0.3 0.01 270);
-  --sidebar-ring: var(--electric-blue);
+  --radius: 0.25rem;
+
+  /* Executive Linen Palette */
+  --background: oklch(0.98 0.006 85);        /* Warm cream #FAF8F4 */
+  --foreground: oklch(0.22 0.01 60);          /* Charcoal #2D2D2D */
+  --card: oklch(1 0 0);                       /* White */
+  --card-foreground: oklch(0.22 0.01 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.01 60);
+
+  /* Forest green primary */
+  --primary: oklch(0.32 0.08 155);            /* #1B4332 */
+  --primary-foreground: oklch(0.98 0.006 85);
+
+  /* Warm gold accent */
+  --accent: oklch(0.72 0.1 75);              /* #C9A84C */
+  --accent-foreground: oklch(0.22 0.01 60);
+
+  --secondary: oklch(0.95 0.006 85);          /* Light cream */
+  --secondary-foreground: oklch(0.32 0.08 155);
+
+  --muted: oklch(0.93 0.008 85);
+  --muted-foreground: oklch(0.52 0.01 60);    /* Mid grey #8A8A8A */
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  --border: oklch(0.88 0.008 85);             /* Warm light border */
+  --input: oklch(0.88 0.008 85);
+  --ring: oklch(0.72 0.1 75);                 /* Gold ring */
+
+  --chart-1: oklch(0.32 0.08 155);
+  --chart-2: oklch(0.72 0.1 75);
+  --chart-3: oklch(0.52 0.06 155);
+  --chart-4: oklch(0.85 0.07 75);
+  --chart-5: oklch(0.42 0.07 155);
+
+  --sidebar: oklch(0.95 0.006 85);
+  --sidebar-foreground: oklch(0.22 0.01 60);
+  --sidebar-primary: oklch(0.32 0.08 155);
+  --sidebar-primary-foreground: oklch(0.98 0.006 85);
+  --sidebar-accent: oklch(0.93 0.008 85);
+  --sidebar-accent-foreground: oklch(0.22 0.01 60);
+  --sidebar-border: oklch(0.88 0.008 85);
+  --sidebar-ring: oklch(0.72 0.1 75);
 }
 
 @layer base {
@@ -98,16 +103,12 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-body);
-    letter-spacing: -0.02em;
+    font-family: 'Lato', sans-serif;
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    text-transform: uppercase;
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
     letter-spacing: -0.01em;
-  }
-  code, pre {
-    font-family: var(--font-code);
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -127,47 +128,61 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
-
   .flex {
     min-height: 0;
     min-width: 0;
   }
-
   @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
     .container {
       padding-left: 2rem;
       padding-right: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 3rem;
+      padding-right: 3rem;
       max-width: 1280px;
     }
   }
-  
-  /* Kinetic animations */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+
+  /* Gold divider line */
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #C9A84C, transparent);
+    opacity: 0.6;
   }
-  
-  @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+
+  /* Scroll-triggered fade-in */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
   }
-  
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
+  .fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
+
+  /* Gold underline nav hover */
+  .nav-link {
+    position: relative;
+    padding-bottom: 2px;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: #C9A84C;
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after {
+    width: 100%;
   }
 }

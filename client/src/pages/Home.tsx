@@ -1,46 +1,46 @@
 /**
- * Kinetic Data Architecture Design
- * - Charcoal base (#1E1E24) with electric blue (#0066FF), hot magenta (#FF0080), laser yellow (#FFE600)
- * - Modular cards with off-axis rotation (0.5–3 deg), floating animation, gradient borders
- * - Archivo Black headings (uppercase), Manrope body, Fira Code for tech labels
- * - All content sourced from resume doc + LinkedIn profile
+ * Executive Linen Design System
+ * Movement: Scandinavian Minimalism × Executive Consulting
+ * Colors: Warm cream (#FAF8F4) bg, Forest green (#1B4332) primary, Gold (#C9A84C) accent
+ * Typography: Cormorant Garamond (display) + Lato (body) + Playfair Display Italic (quotes)
+ * Layout: Full-width alternating sections, generous whitespace, gold dividers, sidebar hero
  */
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useRef, useState } from "react";
 import {
   Cloud,
   Database,
   Shield,
   Mail,
   Phone,
-  Download,
-  Server,
-  Code,
-  Award,
-  TrendingUp,
-  BookOpen,
-  Heart,
-  Globe,
-  Star,
+  MapPin,
   ExternalLink,
   ChevronDown,
   ChevronUp,
-  Briefcase,
-  Target,
+  Award,
+  BookOpen,
+  Heart,
   Users,
-  Layers,
-  Lock,
+  Star,
+  Globe,
+  Briefcase,
   FileText,
+  Download,
 } from "lucide-react";
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
 
-const NAV_LINKS = [
+const GREEN = "#1B4332";
+const GOLD = "#C9A84C";
+const CREAM = "#FAF8F4";
+const CHARCOAL = "#2D2D2D";
+const MUTED = "#6B6B6B";
+
+const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/exec-hero-bg-FQ89QoftLkFwBGe5K5ecm7.webp";
+const PORTRAIT = "https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/exec-portrait-frame-M7aD5vyzYShyfwYaojQxjF.webp";
+
+const NAV = [
   { label: "About", href: "#about" },
-  { label: "Achievements", href: "#achievements" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Skills", href: "#skills" },
@@ -49,46 +49,29 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
+const STATS = [
+  { value: "15+", label: "Years of Experience" },
+  { value: "3", label: "Big Tech Companies" },
+  { value: "9", label: "LinkedIn Recommendations" },
+  { value: "8K", label: "LinkedIn Followers" },
+];
+
 const ACHIEVEMENTS = [
-  {
-    color: "blue",
-    text: "Built safeguards for business users data, avoiding an adverse action (>9 figures $) and burdensome controls proposed by the European Commission.",
-  },
-  {
-    color: "magenta",
-    text: "Spearheaded migration of 90% of privacy workflows at Meta to the Federation Platform — driving enterprise-wide adoption and instituting a sustainable governance model.",
-  },
-  {
-    color: "yellow",
-    text: "Launched and scaled Microsoft's Data Residency Program, delivering 100% global regulatory compliance for Azure across seven high-priority markets including Singapore, Brazil, China, and the EU (Schrems II).",
-  },
-  {
-    color: "blue",
-    text: "Orchestrated the successful Micro Regions launch at Microsoft, delivering mission-critical resilience and unlocking new Azure markets, leading to increased customer acquisition.",
-  },
-  {
-    color: "magenta",
-    text: "Conceived, drove, and executed the Azure-to-Azure Workload Migration Program (now Azure Resource Move), enabling seamless migrations for thousands of enterprise customers.",
-  },
-  {
-    color: "yellow",
-    text: "Delivered seven high-impact features for Amazon RDS PostgreSQL in just six months, directly increasing customer retention.",
-  },
-  {
-    color: "blue",
-    text: "Founded, scaled, and led editorial vision for the AWS Database Blog, achieving #4 rank among all AWS technical blogs and substantially growing developer engagement.",
-  },
-  {
-    color: "magenta",
-    text: "Open-sourced elastic database client libraries — accountable for launch, community adoption, and developer enablement across GitHub, benefiting thousands in the ecosystem.",
-  },
+  "Built safeguards for business users data, avoiding an adverse action (>9 figures $) proposed by the European Commission.",
+  "Spearheaded migration of 90% of privacy workflows at Meta to the Federation Platform, scaling usage from Privacy to Risk.",
+  "Launched Microsoft's Data Residency Program — 100% global regulatory compliance for Azure across seven high-priority markets including Singapore, Brazil, China, and the EU (Schrems II).",
+  "Orchestrated the successful Micro Regions launch at Microsoft, delivering mission-critical resilience and unlocking new Azure markets.",
+  "Conceived and executed the Azure-to-Azure Workload Migration Program (now Azure Resource Move), enabling seamless migrations for thousands of enterprise customers.",
+  "Delivered seven high-impact features for Amazon RDS PostgreSQL in six months, directly increasing customer retention.",
+  "Founded and scaled the AWS Database Blog to #4 rank among all AWS technical blogs, growing community reach by 400%.",
+  "Open-sourced elastic database client libraries — the first open-source launch by the SQL organization at Microsoft.",
 ];
 
 const EXPERIENCES = [
   {
     company: "Meta",
-    color: "blue",
-    icon: Shield,
+    period: "Oct 2022 – Present",
+    color: GREEN,
     roles: [
       {
         title: "Privacy Areas – Competition – Technical Program Manager Lead",
@@ -105,17 +88,17 @@ const EXPERIENCES = [
         title: "Regulatory Response Foundations – Technical Program Manager",
         period: "Oct 2022 – Sept 2024",
         bullets: [
-          "Drove adoption and migration of 90% of privacy workflows to the Federation Platform, scaling usage from Privacy to Risk (Privacy, Security, Compliance).",
+          "Drove adoption and migration of 90% of privacy workflows to the Federation Platform, scaling usage from Privacy to Risk.",
           "Led Privacy workstream quality initiative, aligning work efforts to Meta's evolving business priorities and regulatory requirements.",
-          "Initiated and facilitated the TPM Knowledge Sharing Series, upskilling the privacy program management community and standardizing best practices company-wide.",
+          "Initiated and facilitated the TPM Knowledge Sharing Series, upskilling the privacy program management community company-wide.",
         ],
       },
     ],
   },
   {
     company: "Microsoft",
-    color: "magenta",
-    icon: Cloud,
+    period: "June 2008 – Sept 2022",
+    color: GREEN,
     roles: [
       {
         title: "Geo Expansion & Data Residency in Azure Privacy – Principal TPM Manager",
@@ -130,13 +113,13 @@ const EXPERIENCES = [
         title: "Azure SQL Database Elastic Scale – Senior Program Manager",
         period: "March 2015 – June 2016",
         bullets: [
-          "Open-sourced elastic scale libraries — the very first open-source launch by the SQL organization.",
+          "Open-sourced elastic scale libraries — the first open-source launch by the SQL organization.",
           "Drove developer adoption on GitHub and elevated community engagement.",
           "Acted as technical ambassador in industry forums, influencing the Azure SQL product roadmap.",
         ],
       },
       {
-        title: "Windows Ecosystem Partner and Customer Engagement – Program Manager Lead",
+        title: "Windows Ecosystem Partner & Customer Engagement – Program Manager Lead",
         period: "January 2013 – March 2015",
         bullets: [
           "Led global device certification and compliance for Windows and Windows Phone, ensuring 100% regulatory and Mobile Operator approval for 50+ OEM SKUs.",
@@ -148,14 +131,14 @@ const EXPERIENCES = [
         period: "April 2011 – January 2013",
         bullets: [
           "Led a globally distributed QA team, automating stress testing frameworks and reducing execution time.",
-          "Designed automation framework, resulting in reduction of test code by 50%.",
+          "Designed automation framework, resulting in 50% reduction of test code.",
         ],
       },
       {
         title: "Remote Desktop Licensing – SDET",
         period: "June 2008 – April 2011",
         bullets: [
-          "Created next-generation test automation framework, improving code coverage and execution speed by 60% (reducing execution time from 2.5 days to 1.25 days).",
+          "Created next-generation test automation framework, improving code coverage and execution speed by 60%.",
           "Authored over 30 technical posts for MSDN blogs, cultivating sustained engagement in Microsoft's developer community.",
         ],
       },
@@ -163,15 +146,15 @@ const EXPERIENCES = [
   },
   {
     company: "Amazon Web Services",
-    color: "yellow",
-    icon: Database,
+    period: "July 2016 – July 2018",
+    color: GREEN,
     roles: [
       {
         title: "Amazon RDS PostgreSQL – Sr. Product Manager",
         period: "July 2016 – July 2018",
         bullets: [
           "Owned and executed the full product roadmap for RDS PostgreSQL, increasing YoY revenue by double digits.",
-          "Orchestrated large-scale customer migrations from on-premises/Oracle to RDS, launching seven new features (including logical replication, FedRAMP, HIPAA) in just six months.",
+          "Orchestrated large-scale customer migrations from on-premises/Oracle to RDS, launching seven new features (including logical replication, FedRAMP, HIPAA) in six months.",
           "Represented and evangelized RDS for PostgreSQL at EBCs, customer meetings, partner summits, and conferences.",
         ],
       },
@@ -192,807 +175,899 @@ const PROJECTS = [
     name: "EU Data Boundary",
     company: "Microsoft",
     date: "Jan 2021",
-    color: "blue",
-    description:
-      "Led the EU Data Boundary initiative ensuring Microsoft services meet European data residency and sovereignty requirements under Schrems II.",
+    description: "Led the EU Data Boundary initiative ensuring Microsoft services meet European data residency and sovereignty requirements under Schrems II.",
     url: "https://www.microsoft.com/en-us/trust-center/privacy/european-data-boundary-eudb",
   },
   {
     name: "Data Residency in Azure",
     company: "Microsoft",
     date: "Dec 2018",
-    color: "magenta",
-    description:
-      "Ensure Microsoft and its services meet data residency requirements for various geographies in the world — Singapore, Brazil, Hong Kong, China, and more.",
+    description: "Ensure Microsoft and its services meet data residency requirements for various geographies — Singapore, Brazil, Hong Kong, China, and more.",
     url: "https://azure.microsoft.com/en-us/explore/global-infrastructure/data-residency/",
   },
   {
     name: "Cross-Region Migration Guidance",
     company: "Microsoft",
-    date: "Jan 2019 – Jul 2019",
-    color: "yellow",
-    description:
-      "Authored and published comprehensive Azure cross-region migration guidance on GitHub, enabling enterprise customers to migrate workloads seamlessly.",
+    date: "Jan – Jul 2019",
+    description: "Authored and published comprehensive Azure cross-region migration guidance on GitHub, enabling enterprise customers to migrate workloads seamlessly.",
     url: "https://github.com/Azure/Azure-Migration-Guidance",
   },
   {
     name: "AWS Database Blog",
     company: "Amazon Web Services",
     date: "Jul 2016 – Aug 2018",
-    color: "blue",
-    description:
-      "Founded and scaled the AWS Database Blog from scratch to a #4-ranked AWS technical blog, growing developer community reach by 400%+.",
+    description: "Founded and scaled the AWS Database Blog from scratch to a #4-ranked AWS technical blog, growing developer community reach by 400%+.",
     url: "https://aws.amazon.com/blogs/database/",
   },
 ];
 
 const SKILLS = [
   {
-    category: "Program Management",
-    items: ["Cross-functional Leadership", "Strategic Planning", "Stakeholder Alignment", "Risk Management", "Agile / Scrum", "OKRs"],
-    icon: Target,
-    color: "blue",
+    category: "Program & Product Management",
+    icon: Briefcase,
+    items: ["Cross-functional Leadership", "Strategic Planning", "Stakeholder Alignment", "Risk Management", "Agile / Scrum", "OKRs", "Roadmap Ownership"],
   },
   {
     category: "Cloud & Infrastructure",
-    items: ["Azure", "AWS", "Data Residency", "Cloud Migration", "Compliance", "Multi-region Architecture"],
     icon: Cloud,
-    color: "magenta",
+    items: ["Microsoft Azure", "Amazon Web Services", "Data Residency", "Cloud Migration", "Multi-region Architecture", "Compliance Engineering"],
   },
   {
-    category: "Privacy & Compliance",
-    items: ["GDPR", "CCPA", "Regulatory Response", "Data Governance", "Privacy Strategy", "Risk Assessment", "Zero Trust"],
+    category: "Privacy & Regulatory",
     icon: Shield,
-    color: "yellow",
+    items: ["GDPR", "CCPA", "Regulatory Response", "Data Governance", "Privacy Strategy", "Risk Assessment", "Zero Trust", "EU Data Boundary"],
   },
   {
-    category: "Product & Engineering",
-    items: ["Product Roadmap", "Database Systems", "Open Source", "Developer Relations", "Technical Writing", "SQL", "PostgreSQL"],
-    icon: Code,
-    color: "blue",
+    category: "Data & Engineering",
+    icon: Database,
+    items: ["Database Systems", "PostgreSQL", "SQL", "Open Source", "Developer Relations", "Technical Writing", "Test Automation"],
   },
-];
-
-const CERTIFICATIONS = [
-  { name: "Executive Presence for Women", issuer: "LinkedIn", date: "Nov 2018" },
-  { name: "Dale Carnegie Course: Skills for Success", issuer: "Dale Carnegie", date: "Oct 2014" },
 ];
 
 const ARTICLES = [
   {
     title: "Privacy Trends 2023: Navigating the Evolving Landscape",
     date: "May 23, 2023",
-    summary:
-      "An in-depth look at key privacy trends shaping 2023 — from heightened data protection and strengthening regulations to Privacy by Design, privacy-enhancing technologies, and individual empowerment.",
+    summary: "An in-depth look at key privacy trends shaping 2023 — from heightened data protection and strengthening regulations to Privacy by Design, privacy-enhancing technologies, and individual empowerment.",
     reactions: 12,
     url: "https://www.linkedin.com/pulse/privacy-trends-2023-navigating-evolving-landscape-silvia-doomra/",
-    color: "blue",
   },
   {
     title: "Designing Simple Scorecards",
     date: "Dec 10, 2022",
-    summary:
-      "Practical guidance on building scorecards for program reporting — distilling complex multi-project status into clear, actionable metrics for leadership and stakeholders.",
+    summary: "Practical guidance on building scorecards for program reporting — distilling complex multi-project status into clear, actionable metrics for leadership and stakeholders.",
     reactions: 16,
     url: "https://www.linkedin.com/pulse/designing-simple-scorecards-silvia-doomra/",
-    color: "magenta",
   },
   {
     title: "Dilemmas of a First-Time Manager – People or Product Manager",
     date: "Nov 22, 2017",
-    summary:
-      "Reflections on the real tensions first-time managers face when balancing people leadership with product delivery — drawing on personal experience in the tech industry.",
+    summary: "Reflections on the real tensions first-time managers face when balancing people leadership with product delivery — drawing on personal experience in the tech industry.",
     reactions: 43,
     comments: 4,
     url: "https://www.linkedin.com/pulse/dilemmas-first-time-manager-people-product-silvia-doomra/",
-    color: "yellow",
   },
 ];
 
 const RECOMMENDATIONS = [
   {
     author: "Chandra Achalla",
-    role: "Manager, Azure Privacy",
-    text: "I had the pleasure to have Silvia as part of my team during my time in the Azure Privacy. She is goal oriented and driven by goals. She worked on one of most complex projects (Data Residency) and faced each challenge as a new opportunity to learn. Silvia grasps new concepts quickly and is excellent communicator to a wide range of audience — execs, engineers and lawyers. She is also one of the most responsible, kind and hard working managers. I could see how committed she was to learning and improving herself. She will be an asset any organization.",
-    color: "blue",
+    role: "Manager, Azure Privacy — Microsoft",
+    text: "I had the pleasure to have Silvia as part of my team during my time in the Azure Privacy. She is goal oriented and driven by goals. She worked on one of most complex projects (Data Residency) and faced each challenge as a new opportunity to learn. Silvia grasps new concepts quickly and is excellent communicator to a wide range of audience — execs, engineers and lawyers. She is also one of the most responsible, kind and hard working managers. She will be an asset to any organization.",
   },
   {
     author: "LinkedIn Colleague",
     role: "Partner & Peer, Privacy Team",
     text: "I had the great pleasure and fortune working with Silvia as a partner and later as a peer on the same team. She is a great leader who is empathetic and cares about growing her team. She has great strategic insights and is well respected across the organization for privacy and data residency. She is easy to work with and owns her solution end to end.",
-    color: "magenta",
   },
 ];
 
 const VOLUNTEER = [
-  {
-    role: "Council Member",
-    org: "Women and Allies of Azure Global (WAAG)",
-    period: "Jan 2020 – Present",
-    icon: Users,
-    color: "blue",
-    detail: "Active council member supporting women and allies in Azure engineering globally.",
-  },
-  {
-    role: "Panelist – Navigating the Balancing Act of Priorities and Time",
-    org: "Women in Science and Engineering (WISE), University of Washington",
-    period: "Mar 2018 – Present",
-    icon: Star,
-    color: "magenta",
-    detail: "Panelist sharing insights on time management and career prioritization for women in STEM.",
-  },
-  {
-    role: "TEALS CS Teacher",
-    org: "North Quincy High School",
-    period: "Aug 2015 – Present",
-    icon: BookOpen,
-    color: "yellow",
-    detail:
-      "Teaching Intro CS to high school students. Featured in news and videos for opening opportunities for rural teens through Microsoft's TEALS program.",
-  },
-  {
-    role: "Judge",
-    org: "Microsoft Imagine Cup",
-    period: "Apr 2013 – Present",
-    icon: Award,
-    color: "blue",
-    detail: "Judging global student technology competition at imaginecup.com.",
-  },
-  {
-    role: "Mentor & Sponsor",
-    org: "Global Give Back Circle in Collaboration with Magic Bus",
-    period: "Jan 2016 – Present",
-    icon: Heart,
-    color: "magenta",
-    detail: "Mentored and sponsored a girl in India for her higher education.",
-  },
-  {
-    role: "Teacher",
-    org: "ILP (Indian Literacy Project), Hyderabad",
-    period: "May 2010 – Jul 2010",
-    icon: BookOpen,
-    color: "yellow",
-    detail: "Organized summer camps for rural kids and taught Mathematics and English.",
-  },
+  { role: "Council Member", org: "Women and Allies of Azure Global (WAAG)", period: "Jan 2020 – Present", icon: Users },
+  { role: "Panelist – Navigating the Balancing Act of Priorities and Time", org: "Women in Science and Engineering (WISE), University of Washington", period: "Mar 2018 – Present", icon: Star },
+  { role: "TEALS CS Teacher", org: "North Quincy High School", period: "Aug 2015 – Present", icon: BookOpen },
+  { role: "Judge", org: "Microsoft Imagine Cup", period: "Apr 2013 – Present", icon: Award },
+  { role: "Mentor & Sponsor", org: "Global Give Back Circle × Magic Bus", period: "Jan 2016 – Present", icon: Heart },
+  { role: "Teacher", org: "ILP (Indian Literacy Project), Hyderabad", period: "May 2010 – Jul 2010", icon: BookOpen },
+];
+
+const EDUCATION = [
+  { degree: "Master of Science", institution: "University of San Francisco", year: "Current" },
+  { degree: "MBA, Product Management", institution: "University of Phoenix", year: "2012 – 2014" },
+  { degree: "BE, Information Technology", institution: "Punjab Engineering College (D.U.), Chandigarh, India", year: "2004 – 2008" },
+];
+
+const CERTIFICATIONS = [
+  { name: "Executive Presence for Women", issuer: "LinkedIn Learning", year: "Nov 2018" },
+  { name: "Dale Carnegie Course: Skills for Success", issuer: "Dale Carnegie", year: "Oct 2014" },
 ];
 
 const LANGUAGES = ["English", "Hindi", "Punjabi", "French"];
 
-const EDUCATION = [
-  {
-    degree: "Master of Science",
-    field: "University of San Francisco",
-    year: "Current",
-    color: "blue",
-  },
-  {
-    degree: "MBA, Product Management",
-    field: "University of Phoenix",
-    year: "2012 – 2014",
-    color: "magenta",
-  },
-  {
-    degree: "BE, Information Technology",
-    field: "Punjab Engineering College (D.U.), Chandigarh, India",
-    year: "2004 – 2008",
-    color: "yellow",
-  },
-];
+// ─── SCROLL ANIMATION HOOK ────────────────────────────────────────────────────
 
-// ─── COLOR HELPERS ────────────────────────────────────────────────────────────
-
-const C: Record<string, string> = {
-  blue: "#0066FF",
-  magenta: "#FF0080",
-  yellow: "#FFE600",
-};
-
-// ─── COMPONENTS ──────────────────────────────────────────────────────────────
-
-function SectionBadge({ color, label }: { color: string; label: string }) {
-  const bg = color === "yellow" ? C.yellow : color === "magenta" ? C.magenta : C.blue;
-  const fg = color === "yellow" ? "#1E1E24" : "#ffffff";
-  return (
-    <Badge
-      className="mb-4 text-sm px-4 py-1 font-bold"
-      style={{ backgroundColor: bg, color: fg, border: "none" }}
-    >
-      {label}
-    </Badge>
-  );
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    document.querySelectorAll(".fade-in-up").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 }
 
-function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+// ─── COUNTER COMPONENT ───────────────────────────────────────────────────────
+
+function Counter({ value, label }: { value: string; label: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [displayed, setDisplayed] = useState("0");
+  const animated = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !animated.current) {
+        animated.current = true;
+        const isNum = /^\d+/.test(value);
+        if (!isNum) { setDisplayed(value); return; }
+        const num = parseInt(value);
+        const suffix = value.replace(/^\d+/, "");
+        let start = 0;
+        const step = Math.ceil(num / 30);
+        const timer = setInterval(() => {
+          start = Math.min(start + step, num);
+          setDisplayed(start + suffix);
+          if (start >= num) clearInterval(timer);
+        }, 40);
+      }
+    }, { threshold: 0.5 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value]);
+
   return (
-    <div className="mb-16">
-      <h2 className="text-5xl font-bold text-white mb-4">{title}</h2>
-      {subtitle && <p className="text-xl text-muted-foreground max-w-2xl">{subtitle}</p>}
+    <div ref={ref} className="text-center">
+      <div
+        className="text-5xl font-bold mb-1"
+        style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+      >
+        {displayed}
+      </div>
+      <div className="text-sm uppercase tracking-widest" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>
+        {label}
+      </div>
     </div>
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
+// ─── SECTION LABEL ────────────────────────────────────────────────────────────
+
+function SectionLabel({ text }: { text: string }) {
+  return (
+    <div className="flex items-center gap-4 mb-6">
+      <div className="h-px flex-1" style={{ backgroundColor: GOLD, opacity: 0.5 }} />
+      <span
+        className="text-xs uppercase tracking-[0.25em] font-bold px-4"
+        style={{ color: GOLD, fontFamily: "'Lato', sans-serif" }}
+      >
+        {text}
+      </span>
+      <div className="h-px flex-1" style={{ backgroundColor: GOLD, opacity: 0.5 }} />
+    </div>
+  );
+}
+
+// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 
 export default function Home() {
-  const [expandedExp, setExpandedExp] = useState<Record<string, boolean>>({});
+  useScrollReveal();
+  const [expandedRoles, setExpandedRoles] = useState<Record<string, boolean>>({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleExp = (key: string) =>
-    setExpandedExp((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleRole = (key: string) =>
+    setExpandedRoles((p) => ({ ...p, [key]: !p[key] }));
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background circuit pattern */}
-      <div
-        className="fixed inset-0 opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage: "url(https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/tech-pattern_1c27b21e.png)",
-          backgroundSize: "512px 512px",
-          backgroundRepeat: "repeat",
-        }}
-      />
+    <div className="min-h-screen" style={{ backgroundColor: CREAM, color: CHARCOAL }}>
 
-      {/* ── STICKY NAV ──────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container flex items-center justify-between h-14">
-          <span className="font-bold text-white tracking-widest text-sm" style={{ fontFamily: "'Archivo Black', sans-serif" }}>
-            SD
-          </span>
-          <div className="hidden md:flex items-center gap-6">
-            {NAV_LINKS.map((l) => (
+      {/* ── NAVIGATION ────────────────────────────────────────────────────── */}
+      <nav
+        className="sticky top-0 z-50 border-b"
+        style={{ backgroundColor: "rgba(250,248,244,0.95)", backdropFilter: "blur(12px)", borderColor: "rgba(201,168,76,0.2)" }}
+      >
+        <div className="container flex items-center justify-between h-16">
+          <a href="#about" className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: GREEN, fontFamily: "'Lato', sans-serif" }}>
+              SD
+            </div>
+            <span className="hidden sm:block font-semibold text-sm tracking-wide" style={{ color: GREEN, fontFamily: "'Lato', sans-serif" }}>
+              Silvia Doomra
+            </span>
+          </a>
+
+          <div className="hidden md:flex items-center gap-8">
+            {NAV.map((n) => (
               <a
-                key={l.href}
-                href={l.href}
-                className="text-xs font-semibold text-muted-foreground hover:text-white transition-colors tracking-widest uppercase"
+                key={n.href}
+                href={n.href}
+                className="nav-link text-xs uppercase tracking-widest font-semibold transition-colors"
+                style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = GREEN)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = MUTED)}
               >
-                {l.label}
+                {n.label}
               </a>
             ))}
           </div>
-          <a href="mailto:contact@silviadoomra.com">
-            <Button size="sm" className="bg-[#0066FF] hover:bg-[#0066FF]/90 text-white font-bold text-xs">
-              HIRE ME
-            </Button>
+
+          <a
+            href="mailto:contact@silviadoomra.com"
+            className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-xs font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90"
+            style={{ backgroundColor: GREEN, fontFamily: "'Lato', sans-serif" }}
+          >
+            <Mail className="h-3.5 w-3.5" /> Contact
           </a>
+
+          <button
+            className="md:hidden p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{ color: GREEN }}
+          >
+            <div className="w-5 h-0.5 mb-1" style={{ backgroundColor: GREEN }} />
+            <div className="w-5 h-0.5 mb-1" style={{ backgroundColor: GREEN }} />
+            <div className="w-5 h-0.5" style={{ backgroundColor: GREEN }} />
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t px-6 py-4 space-y-3" style={{ borderColor: "rgba(201,168,76,0.2)", backgroundColor: CREAM }}>
+            {NAV.map((n) => (
+              <a
+                key={n.href}
+                href={n.href}
+                className="block text-sm font-semibold uppercase tracking-widest"
+                style={{ color: GREEN, fontFamily: "'Lato', sans-serif" }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {n.label}
+              </a>
+            ))}
+          </div>
+        )}
       </nav>
 
-      {/* ── HERO ────────────────────────────────────────────────────────────── */}
-      <section id="about" className="relative min-h-[92vh] flex items-center overflow-hidden">
+      {/* ── HERO ──────────────────────────────────────────────────────────── */}
+      <section id="about" className="relative overflow-hidden">
+        {/* Background image, very subtle */}
         <div
-          className="absolute inset-0 opacity-25"
-          style={{
-            backgroundImage: "url(https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/hero-bg_24ad6063.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+          className="absolute inset-0 opacity-[0.07]"
+          style={{ backgroundImage: `url(${HERO_BG})`, backgroundSize: "cover", backgroundPosition: "center" }}
         />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+        <div className="container relative z-10 py-24 lg:py-32">
+          <div className="grid lg:grid-cols-5 gap-16 items-center">
 
-        <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left */}
-            <div className="space-y-8">
-              <SectionBadge color="blue" label="TECHNICAL PROGRAM MANAGER · 15+ YEARS" />
-              <h1 className="text-7xl lg:text-8xl font-bold leading-[0.95]">
-                <span className="text-white">SILVIA</span>
-                <br />
-                <span style={{ color: C.blue }}>DOOMRA</span>
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-                Dynamic TPM with 15+ years driving global product delivery and operational excellence at{" "}
-                <span className="text-white font-semibold">Meta</span>,{" "}
-                <span className="text-white font-semibold">Microsoft</span>, and{" "}
-                <span className="text-white font-semibold">AWS</span>. Transforming complex, high-ambiguity challenges into strategic, measurable outcomes.
-              </p>
+            {/* Text — 3 cols */}
+            <div className="lg:col-span-3 space-y-8">
+              <div>
+                <p
+                  className="text-xs uppercase tracking-[0.3em] mb-4 font-semibold"
+                  style={{ color: GOLD, fontFamily: "'Lato', sans-serif" }}
+                >
+                  Technical Program Manager · Greater Seattle Area
+                </p>
+                <h1
+                  className="text-6xl lg:text-8xl leading-[0.95] mb-6"
+                  style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: GREEN }}
+                >
+                  Silvia<br />
+                  <span style={{ color: CHARCOAL }}>Doomra</span>
+                </h1>
+                <p className="text-lg leading-relaxed max-w-xl" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>
+                  Dynamic TPM with 15+ years driving global product delivery and operational excellence at{" "}
+                  <span style={{ color: CHARCOAL, fontWeight: 700 }}>Meta</span>,{" "}
+                  <span style={{ color: CHARCOAL, fontWeight: 700 }}>Microsoft</span>, and{" "}
+                  <span style={{ color: CHARCOAL, fontWeight: 700 }}>Amazon Web Services</span>.
+                  Transforming complex, high-ambiguity challenges into strategic, measurable outcomes across privacy, cloud, and data.
+                </p>
+              </div>
+
               <blockquote
-                className="pl-4 italic text-muted-foreground text-sm"
-                style={{ borderLeft: `4px solid ${C.magenta}` }}
+                className="text-xl italic leading-relaxed pl-5"
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  color: GREEN,
+                  borderLeft: `3px solid ${GOLD}`,
+                }}
               >
-                "Change is the law, Growth is optional: Choose wisely." — Dr. Kiran Bedi
+                "Change is the law, Growth is optional: Choose wisely."
+                <footer className="text-sm mt-2 not-italic" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>— Dr. Kiran Bedi</footer>
               </blockquote>
 
               <div className="flex flex-wrap gap-4">
-                <a href="mailto:contact@silviadoomra.com">
-                  <Button size="lg" className="bg-[#0066FF] hover:bg-[#0066FF]/90 text-white font-bold">
-                    <Mail className="mr-2 h-5 w-5" /> CONTACT ME
-                  </Button>
+                <a
+                  href="mailto:contact@silviadoomra.com"
+                  className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: GREEN, fontFamily: "'Lato', sans-serif" }}
+                >
+                  <Mail className="h-4 w-4" /> Get In Touch
                 </a>
-                <Button size="lg" variant="outline" className="font-bold" style={{ borderColor: C.magenta, color: C.magenta }}>
-                  <Download className="mr-2 h-5 w-5" /> DOWNLOAD CV
-                </Button>
+                <a
+                  href="https://www.linkedin.com/in/silviadoomra/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-80"
+                  style={{ border: `1.5px solid ${GOLD}`, color: GREEN, fontFamily: "'Lato', sans-serif" }}
+                >
+                  <ExternalLink className="h-4 w-4" /> LinkedIn
+                </a>
               </div>
 
-              <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <a href="mailto:contact@silviadoomra.com" className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Mail className="h-4 w-4" style={{ color: C.blue }} /> contact@silviadoomra.com
+              <div className="flex flex-col gap-2 text-sm" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>
+                <a href="mailto:contact@silviadoomra.com" className="flex items-center gap-2 hover:underline">
+                  <Mail className="h-4 w-4" style={{ color: GOLD }} /> contact@silviadoomra.com
                 </a>
-                <a href="tel:425-802-0705" className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Phone className="h-4 w-4" style={{ color: C.blue }} /> 425-802-0705
+                <a href="tel:425-802-0705" className="flex items-center gap-2 hover:underline">
+                  <Phone className="h-4 w-4" style={{ color: GOLD }} /> 425-802-0705
                 </a>
                 <span className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" style={{ color: C.blue }} /> Greater Seattle Area
+                  <MapPin className="h-4 w-4" style={{ color: GOLD }} /> Greater Seattle Area
                 </span>
+                <a href="https://silviadoomra.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:underline">
+                  <Globe className="h-4 w-4" style={{ color: GOLD }} /> silviadoomra.com
+                </a>
               </div>
             </div>
 
-            {/* Right: expertise pillars */}
-            <div className="grid grid-cols-1 gap-5">
-              {[
-                { icon: Shield, color: "blue", title: "PRIVACY & COMPLIANCE", desc: "Leading global privacy strategy and regulatory compliance at Meta, Microsoft, and AWS", delay: "0s", rot: "2deg" },
-                { icon: Cloud, color: "magenta", title: "CLOUD INFRASTRUCTURE", desc: "Architecting data residency programs and multi-region cloud solutions at scale", delay: "1.3s", rot: "-3deg" },
-                { icon: Database, color: "yellow", title: "PRODUCT MANAGEMENT", desc: "Delivering high-impact database and cloud products, growing revenue double digits YoY", delay: "2.6s", rot: "1.5deg" },
-              ].map(({ icon: Icon, color, title, desc, delay, rot }) => (
-                <Card
-                  key={title}
-                  className="p-6 bg-card/50 backdrop-blur-sm transition-all duration-300 animate-float"
-                  style={{
-                    animationDelay: delay,
-                    transform: `rotate(${rot})`,
-                    borderColor: `${C[color]}40`,
-                  }}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-lg flex-shrink-0" style={{ backgroundColor: `${C[color]}20` }}>
-                      <Icon className="h-8 w-8" style={{ color: C[color] }} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold mb-1 text-white">{title}</h3>
-                      <p className="text-sm text-muted-foreground">{desc}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
+            {/* Portrait — 2 cols */}
+            <div className="lg:col-span-2 flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Gold frame offset */}
+                <div
+                  className="absolute -top-4 -right-4 w-full h-full"
+                  style={{ border: `2px solid ${GOLD}`, opacity: 0.5 }}
+                />
+                <img
+                  src={PORTRAIT}
+                  alt="Silvia Doomra — Senior Technical Program Manager"
+                  className="relative z-10 w-72 lg:w-80 object-cover"
+                  style={{ filter: "grayscale(15%)" }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── KEY ACHIEVEMENTS ────────────────────────────────────────────────── */}
-      <section id="achievements" className="py-24 bg-card/10">
+      {/* ── STATS BAR ─────────────────────────────────────────────────────── */}
+      <section className="py-16 border-y" style={{ borderColor: `${GOLD}30`, backgroundColor: "white" }}>
         <div className="container">
-          <SectionBadge color="yellow" label="IMPACT" />
-          <SectionHeading
-            title="KEY ACHIEVEMENTS"
-            subtitle="Delivering measurable business outcomes and driving strategic initiatives at scale"
-          />
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
+            {STATS.map((s) => (
+              <Counter key={s.label} value={s.value} label={s.label} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── KEY ACHIEVEMENTS ──────────────────────────────────────────────── */}
+      <section className="py-24" style={{ backgroundColor: CREAM }}>
+        <div className="container">
+          <SectionLabel text="Impact & Achievements" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Measurable Outcomes
+          </h2>
+          <div className="grid md:grid-cols-2 gap-x-16 gap-y-8">
             {ACHIEVEMENTS.map((a, i) => (
-              <Card
+              <div
                 key={i}
-                className="p-6 bg-card/50 backdrop-blur-sm border-l-4 hover:scale-[1.01] transition-all duration-300"
-                style={{
-                  borderLeftColor: C[a.color],
-                  transform: `rotate(${i % 2 === 0 ? 0.8 : -0.8}deg)`,
-                }}
+                className="flex items-start gap-4 fade-in-up"
+                style={{ transitionDelay: `${i * 60}ms` }}
               >
-                <div className="flex items-start gap-4">
-                  <TrendingUp className="h-5 w-5 flex-shrink-0 mt-1" style={{ color: C[a.color] }} />
-                  <p className="text-sm text-foreground leading-relaxed">{a.text}</p>
+                <div
+                  className="mt-2 flex-shrink-0 w-5 h-5 flex items-center justify-center text-white text-xs font-bold"
+                  style={{ backgroundColor: GOLD, fontFamily: "'Lato', sans-serif" }}
+                >
+                  {i + 1}
                 </div>
-              </Card>
+                <p className="text-base leading-relaxed" style={{ color: CHARCOAL, fontFamily: "'Lato', sans-serif" }}>
+                  {a}
+                </p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── EXPERIENCE ──────────────────────────────────────────────────────── */}
-      <section id="experience" className="py-24">
+      {/* ── EXPERIENCE ────────────────────────────────────────────────────── */}
+      <section id="experience" className="py-24" style={{ backgroundColor: "white" }}>
         <div className="container">
-          <SectionBadge color="magenta" label="CAREER JOURNEY" />
-          <SectionHeading
-            title="EXPERIENCE"
-            subtitle="Building mission-critical infrastructure and privacy solutions at the world's leading technology companies"
-          />
+          <SectionLabel text="Career History" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Professional Experience
+          </h2>
 
-          <div className="space-y-16">
-            {EXPERIENCES.map((company) => {
-              const Icon = company.icon;
-              const color = C[company.color];
-              return (
-                <div key={company.company}>
-                  {/* Company header */}
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="p-4 rounded-xl" style={{ backgroundColor: `${color}20` }}>
-                      <Icon className="h-10 w-10" style={{ color }} />
-                    </div>
-                    <h3 className="text-4xl font-bold text-white">{company.company}</h3>
-                  </div>
-
-                  <div className="space-y-5 ml-8 border-l-2 pl-8" style={{ borderColor: `${color}40` }}>
-                    {company.roles.map((role, ri) => {
-                      const key = `${company.company}-${ri}`;
-                      const expanded = expandedExp[key];
-                      const showToggle = role.bullets.length > 3;
-                      const visibleBullets = expanded ? role.bullets : role.bullets.slice(0, 3);
-                      return (
-                        <Card
-                          key={ri}
-                          className="p-7 bg-card/50 backdrop-blur-sm hover:scale-[1.005] transition-all duration-300"
-                          style={{
-                            borderColor: `${color}25`,
-                            transform: `rotate(${ri % 2 === 0 ? 0.4 : -0.4}deg)`,
-                          }}
-                        >
-                          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2 mb-4">
-                            <h4 className="text-lg font-bold text-white leading-tight max-w-xl">{role.title}</h4>
-                            <Badge variant="outline" className="border-muted-foreground text-muted-foreground w-fit flex-shrink-0 text-xs">
-                              {role.period}
-                            </Badge>
-                          </div>
-                          <ul className="space-y-2">
-                            {visibleBullets.map((b, bi) => (
-                              <li key={bi} className="flex items-start gap-3">
-                                <div className="mt-2 h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
-                                <span className="text-sm text-muted-foreground leading-relaxed">{b}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          {showToggle && (
-                            <button
-                              onClick={() => toggleExp(key)}
-                              className="mt-4 flex items-center gap-1 text-xs font-semibold transition-colors"
-                              style={{ color }}
-                            >
-                              {expanded ? <><ChevronUp className="h-4 w-4" /> Show less</> : <><ChevronDown className="h-4 w-4" /> Show more</>}
-                            </button>
-                          )}
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED PROJECTS ───────────────────────────────────────────────── */}
-      <section id="projects" className="py-24 bg-card/10">
-        <div className="container">
-          <SectionBadge color="blue" label="FEATURED WORK" />
-          <SectionHeading
-            title="PROJECTS"
-            subtitle="High-impact initiatives shaping cloud compliance, data residency, and developer ecosystems"
-          />
-          <div className="grid md:grid-cols-2 gap-6">
-            {PROJECTS.map((p, i) => (
-              <Card
-                key={i}
-                className="p-7 bg-card/50 backdrop-blur-sm hover:scale-[1.02] transition-all duration-300 group"
-                style={{
-                  borderColor: `${C[p.color]}30`,
-                  transform: `rotate(${i % 2 === 0 ? 1.5 : -1.5}deg)`,
-                }}
-              >
-                <div className="flex items-start justify-between mb-3">
+          <div className="space-y-20">
+            {EXPERIENCES.map((company, ci) => (
+              <div key={ci} className="fade-in-up" style={{ transitionDelay: `${ci * 100}ms` }}>
+                {/* Company header */}
+                <div className="flex items-center gap-4 mb-8">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-1">{p.name}</h3>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs" style={{ borderColor: C[p.color], color: C[p.color] }}>
-                        {p.company}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{p.date}</span>
-                    </div>
+                    <h3
+                      className="text-3xl"
+                      style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN, fontWeight: 600 }}
+                    >
+                      {company.company}
+                    </h3>
+                    <p className="text-sm mt-0.5" style={{ color: GOLD, fontFamily: "'Lato', sans-serif", fontWeight: 700 }}>
+                      {company.period}
+                    </p>
                   </div>
-                  <a href={p.url} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-white transition-colors" />
-                  </a>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
-              </Card>
+
+                {/* Roles */}
+                <div className="space-y-6 pl-0 lg:pl-6 border-l-2" style={{ borderColor: `${GOLD}30` }}>
+                  {company.roles.map((role, ri) => {
+                    const key = `${ci}-${ri}`;
+                    const expanded = expandedRoles[key];
+                    const showToggle = role.bullets.length > 3;
+                    const visible = expanded ? role.bullets : role.bullets.slice(0, 3);
+                    return (
+                      <div
+                        key={ri}
+                        className="relative pl-8 py-6 pr-6 transition-all duration-300"
+                        style={{ backgroundColor: ri % 2 === 0 ? CREAM : "white", borderLeft: `3px solid ${GREEN}` }}
+                      >
+                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-1 mb-4">
+                          <h4
+                            className="text-xl font-semibold leading-snug max-w-2xl"
+                            style={{ fontFamily: "'Cormorant Garamond', serif", color: CHARCOAL }}
+                          >
+                            {role.title}
+                          </h4>
+                          <span
+                            className="text-xs font-semibold uppercase tracking-wider flex-shrink-0 px-3 py-1 h-fit"
+                            style={{ backgroundColor: `${GOLD}20`, color: GREEN, fontFamily: "'Lato', sans-serif" }}
+                          >
+                            {role.period}
+                          </span>
+                        </div>
+                        <ul className="space-y-2">
+                          {visible.map((b, bi) => (
+                            <li key={bi} className="flex items-start gap-3">
+                              <div className="mt-2 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: GOLD }} />
+                              <span className="text-sm leading-relaxed" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {showToggle && (
+                          <button
+                            onClick={() => toggleRole(key)}
+                            className="mt-4 flex items-center gap-1 text-xs font-bold uppercase tracking-wider transition-opacity hover:opacity-70"
+                            style={{ color: GREEN, fontFamily: "'Lato', sans-serif" }}
+                          >
+                            {expanded ? <><ChevronUp className="h-3.5 w-3.5" /> Show less</> : <><ChevronDown className="h-3.5 w-3.5" /> Show more</>}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── SKILLS ──────────────────────────────────────────────────────────── */}
-      <section id="skills" className="py-24">
+      {/* ── PROJECTS ──────────────────────────────────────────────────────── */}
+      <section id="projects" className="py-24" style={{ backgroundColor: CREAM }}>
         <div className="container">
-          <SectionBadge color="blue" label="EXPERTISE" />
-          <SectionHeading
-            title="SKILLS"
-            subtitle="Cross-functional leadership spanning program management, cloud infrastructure, and privacy compliance"
-          />
+          <SectionLabel text="Featured Work" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Key Projects
+          </h2>
           <div className="grid md:grid-cols-2 gap-8">
+            {PROJECTS.map((p, i) => (
+              <a
+                key={i}
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block p-8 bg-white border transition-all duration-300 hover:shadow-lg fade-in-up"
+                style={{ borderColor: `${GOLD}30`, transitionDelay: `${i * 80}ms` }}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3
+                      className="text-2xl mb-1 group-hover:underline"
+                      style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+                    >
+                      {p.name}
+                    </h3>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="text-xs font-bold uppercase tracking-wider px-2 py-0.5"
+                        style={{ backgroundColor: `${GREEN}15`, color: GREEN, fontFamily: "'Lato', sans-serif" }}
+                      >
+                        {p.company}
+                      </span>
+                      <span className="text-xs" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>{p.date}</span>
+                    </div>
+                  </div>
+                  <ExternalLink className="h-4 w-4 flex-shrink-0 mt-1 opacity-40 group-hover:opacity-100 transition-opacity" style={{ color: GREEN }} />
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>{p.description}</p>
+                <div className="mt-4 h-0.5 w-0 group-hover:w-full transition-all duration-500" style={{ backgroundColor: GOLD }} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SKILLS ────────────────────────────────────────────────────────── */}
+      <section id="skills" className="py-24" style={{ backgroundColor: "white" }}>
+        <div className="container">
+          <SectionLabel text="Core Competencies" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Skills & Expertise
+          </h2>
+          <div className="grid md:grid-cols-2 gap-10">
             {SKILLS.map((sg, i) => {
               const Icon = sg.icon;
-              const color = C[sg.color];
               return (
-                <Card
-                  key={i}
-                  className="p-8 bg-card/50 backdrop-blur-sm hover:scale-[1.02] transition-all duration-300"
-                  style={{ transform: `rotate(${i % 2 === 0 ? 2 : -2}deg)`, borderColor: `${color}30` }}
-                >
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="p-3 rounded-lg" style={{ backgroundColor: `${color}20` }}>
-                      <Icon className="h-8 w-8" style={{ color }} />
+                <div key={i} className="fade-in-up" style={{ transitionDelay: `${i * 80}ms` }}>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="p-2" style={{ backgroundColor: `${GREEN}15` }}>
+                      <Icon className="h-5 w-5" style={{ color: GREEN }} />
                     </div>
-                    <h3 className="text-2xl font-bold text-white">{sg.category}</h3>
+                    <h3
+                      className="text-2xl"
+                      style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+                    >
+                      {sg.category}
+                    </h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {sg.items.map((skill, si) => (
-                      <Badge
+                      <span
                         key={si}
-                        variant="outline"
-                        className="text-sm px-3 py-1"
-                        style={{ borderColor: color, color }}
+                        className="text-sm px-3 py-1.5 border transition-all hover:border-green-800"
+                        style={{
+                          borderColor: `${GOLD}50`,
+                          color: CHARCOAL,
+                          fontFamily: "'Lato', sans-serif",
+                          backgroundColor: `${GOLD}08`,
+                        }}
                       >
                         {skill}
-                      </Badge>
+                      </span>
                     ))}
                   </div>
-                </Card>
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* ── RECOMMENDATIONS ─────────────────────────────────────────────────── */}
-      <section id="recommendations" className="py-24 bg-card/10">
+      {/* ── RECOMMENDATIONS ───────────────────────────────────────────────── */}
+      <section className="py-24" style={{ backgroundColor: GREEN }}>
         <div className="container">
-          <SectionBadge color="magenta" label="SOCIAL PROOF" />
-          <SectionHeading title="RECOMMENDATIONS" subtitle="What colleagues and managers say about working with Silvia" />
-          <div className="grid md:grid-cols-2 gap-8">
+          <SectionLabel text="Testimonials" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: "white" }}
+          >
+            Recommendations
+          </h2>
+          <div className="grid md:grid-cols-2 gap-10">
             {RECOMMENDATIONS.map((r, i) => (
-              <Card
+              <div
                 key={i}
-                className="p-8 bg-card/50 backdrop-blur-sm hover:scale-[1.01] transition-all duration-300"
+                className="p-8 fade-in-up"
                 style={{
-                  borderColor: `${C[r.color]}30`,
-                  transform: `rotate(${i % 2 === 0 ? 1 : -1}deg)`,
+                  backgroundColor: "rgba(255,255,255,0.07)",
+                  borderLeft: `3px solid ${GOLD}`,
+                  transitionDelay: `${i * 100}ms`,
                 }}
               >
-                <div className="flex gap-1 mb-4">
+                <div className="flex gap-0.5 mb-5">
                   {[...Array(5)].map((_, si) => (
-                    <Star key={si} className="h-4 w-4 fill-current" style={{ color: C[r.color] }} />
+                    <Star key={si} className="h-4 w-4 fill-current" style={{ color: GOLD }} />
                   ))}
                 </div>
-                <blockquote className="text-sm text-muted-foreground leading-relaxed mb-6 italic">
+                <blockquote
+                  className="text-lg italic leading-relaxed mb-6"
+                  style={{ fontFamily: "'Playfair Display', serif", color: "rgba(255,255,255,0.9)" }}
+                >
                   "{r.text}"
                 </blockquote>
                 <div>
-                  <p className="font-bold text-white">{r.author}</p>
-                  <p className="text-xs text-muted-foreground">{r.role}</p>
+                  <p className="font-bold text-white" style={{ fontFamily: "'Lato', sans-serif" }}>{r.author}</p>
+                  <p className="text-sm" style={{ color: `${GOLD}CC`, fontFamily: "'Lato', sans-serif" }}>{r.role}</p>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
-          <p className="mt-6 text-sm text-muted-foreground text-center">
+          <p className="text-center mt-10 text-sm" style={{ color: `${GOLD}99`, fontFamily: "'Lato', sans-serif" }}>
             9 total recommendations on{" "}
-            <a
-              href="https://www.linkedin.com/in/silviadoomra/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-white transition-colors"
-            >
+            <a href="https://www.linkedin.com/in/silviadoomra/" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80" style={{ color: GOLD }}>
               LinkedIn
             </a>
           </p>
         </div>
       </section>
 
-      {/* ── ARTICLES ────────────────────────────────────────────────────────── */}
-      <section id="articles" className="py-24">
+      {/* ── ARTICLES ──────────────────────────────────────────────────────── */}
+      <section id="articles" className="py-24" style={{ backgroundColor: CREAM }}>
         <div className="container">
-          <SectionBadge color="yellow" label="THOUGHT LEADERSHIP" />
-          <SectionHeading title="ARTICLES" subtitle="Published insights on privacy, program management, and leadership" />
-          <div className="grid md:grid-cols-3 gap-6">
+          <SectionLabel text="Thought Leadership" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Published Articles
+          </h2>
+          <div className="space-y-6">
             {ARTICLES.map((a, i) => (
               <a
                 key={i}
                 href={a.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block group"
+                className="group flex flex-col lg:flex-row gap-6 p-8 bg-white border transition-all duration-300 hover:shadow-md fade-in-up"
+                style={{ borderColor: `${GOLD}30`, transitionDelay: `${i * 80}ms` }}
               >
-                <Card
-                  className="p-7 bg-card/50 backdrop-blur-sm h-full hover:scale-[1.03] transition-all duration-300 border-t-4"
-                  style={{
-                    borderTopColor: C[a.color],
-                    transform: `rotate(${i % 2 === 0 ? 1 : -1}deg)`,
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs text-muted-foreground font-mono">{a.date}</span>
-                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-white transition-colors" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-3 leading-snug group-hover:underline">
+                <div className="lg:w-32 flex-shrink-0">
+                  <p className="text-xs uppercase tracking-widest font-semibold" style={{ color: GOLD, fontFamily: "'Lato', sans-serif" }}>
+                    {a.date}
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <h3
+                    className="text-2xl mb-3 group-hover:underline"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+                  >
                     {a.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">{a.summary}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono" style={{ color: C[a.color] }}>
-                      {a.reactions} reactions
-                    </span>
-                    {a.comments && (
-                      <span className="text-xs text-muted-foreground">· {a.comments} comments</span>
-                    )}
-                  </div>
-                </Card>
+                  <p className="text-sm leading-relaxed mb-3" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>{a.summary}</p>
+                  <span className="text-xs font-semibold" style={{ color: GOLD, fontFamily: "'Lato', sans-serif" }}>
+                    {a.reactions} reactions{a.comments ? ` · ${a.comments} comments` : ""}
+                  </span>
+                </div>
+                <div className="flex-shrink-0 flex items-center">
+                  <ExternalLink className="h-4 w-4 opacity-30 group-hover:opacity-80 transition-opacity" style={{ color: GREEN }} />
+                </div>
               </a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CERTIFICATIONS ──────────────────────────────────────────────────── */}
-      <section className="py-24 bg-card/10">
+      {/* ── VOLUNTEER ─────────────────────────────────────────────────────── */}
+      <section id="volunteer" className="py-24" style={{ backgroundColor: "white" }}>
         <div className="container">
-          <SectionBadge color="blue" label="CREDENTIALS" />
-          <SectionHeading title="CERTIFICATIONS" />
-          <div className="grid md:grid-cols-2 gap-5">
-            {CERTIFICATIONS.map((cert, i) => (
-              <Card
-                key={i}
-                className="p-6 bg-card/50 backdrop-blur-sm hover:border-[#0066FF] transition-all duration-300"
-                style={{ borderColor: `${C.blue}30` }}
-              >
-                <div className="flex items-center gap-4">
-                  <Award className="h-6 w-6 flex-shrink-0" style={{ color: C.blue }} />
-                  <div>
-                    <p className="font-bold text-white">{cert.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {cert.issuer} · {cert.date}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── VOLUNTEER ───────────────────────────────────────────────────────── */}
-      <section id="volunteer" className="py-24">
-        <div className="container">
-          <SectionBadge color="magenta" label="GIVING BACK" />
-          <SectionHeading title="VOLUNTEER WORK" subtitle="Committed to education, diversity, and community empowerment" />
+          <SectionLabel text="Community" />
+          <h2
+            className="text-5xl mb-16 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Volunteer Work
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {VOLUNTEER.map((v, i) => {
               const Icon = v.icon;
-              const color = C[v.color];
               return (
-                <Card
+                <div
                   key={i}
-                  className="p-6 bg-card/50 backdrop-blur-sm hover:scale-[1.02] transition-all duration-300"
-                  style={{
-                    borderColor: `${color}30`,
-                    transform: `rotate(${i % 2 === 0 ? 1 : -1}deg)`,
-                  }}
+                  className="p-6 border fade-in-up transition-all duration-300 hover:shadow-md"
+                  style={{ borderColor: `${GOLD}30`, transitionDelay: `${i * 60}ms`, backgroundColor: CREAM }}
                 >
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="p-2 rounded-lg flex-shrink-0" style={{ backgroundColor: `${color}20` }}>
-                      <Icon className="h-5 w-5" style={{ color }} />
+                    <div className="p-2 flex-shrink-0" style={{ backgroundColor: `${GREEN}15` }}>
+                      <Icon className="h-4 w-4" style={{ color: GREEN }} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white text-sm leading-snug">{v.role}</h4>
-                      <p className="text-xs font-semibold mt-0.5" style={{ color }}>{v.org}</p>
+                      <h4
+                        className="text-base font-semibold leading-snug"
+                        style={{ fontFamily: "'Cormorant Garamond', serif", color: CHARCOAL }}
+                      >
+                        {v.role}
+                      </h4>
+                      <p className="text-xs font-semibold mt-1" style={{ color: GREEN, fontFamily: "'Lato', sans-serif" }}>{v.org}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="text-xs mb-3 border-muted-foreground text-muted-foreground">
+                  <span
+                    className="text-xs font-semibold uppercase tracking-wider px-2 py-0.5"
+                    style={{ backgroundColor: `${GOLD}20`, color: MUTED, fontFamily: "'Lato', sans-serif" }}
+                  >
                     {v.period}
-                  </Badge>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{v.detail}</p>
-                </Card>
+                  </span>
+                </div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* ── EDUCATION + LANGUAGES ───────────────────────────────────────────── */}
-      <section className="py-24 bg-card/10">
+      {/* ── EDUCATION + CERTIFICATIONS + LANGUAGES ────────────────────────── */}
+      <section className="py-24" style={{ backgroundColor: CREAM }}>
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-16">
             {/* Education */}
             <div className="lg:col-span-2">
-              <SectionBadge color="yellow" label="ACADEMIC BACKGROUND" />
-              <SectionHeading title="EDUCATION" />
-              <div className="space-y-5">
+              <SectionLabel text="Academic Background" />
+              <h2
+                className="text-5xl mb-10 fade-in-up"
+                style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+              >
+                Education
+              </h2>
+              <div className="space-y-6">
                 {EDUCATION.map((edu, i) => (
-                  <Card
+                  <div
                     key={i}
-                    className="p-7 bg-card/50 backdrop-blur-sm hover:scale-[1.01] transition-all duration-300"
-                    style={{
-                      borderColor: `${C[edu.color]}30`,
-                      transform: `rotate(${i % 2 === 0 ? 0.8 : -0.8}deg)`,
-                    }}
+                    className="flex items-start gap-5 p-6 bg-white border fade-in-up"
+                    style={{ borderColor: `${GOLD}30`, transitionDelay: `${i * 80}ms` }}
                   >
-                    <div className="flex items-start gap-4">
-                      <Award className="h-7 w-7 flex-shrink-0 mt-1" style={{ color: C[edu.color] }} />
-                      <div>
-                        <h3 className="text-xl font-bold text-white mb-1">{edu.degree}</h3>
-                        <p className="text-muted-foreground text-sm mb-2">{edu.field}</p>
-                        <Badge variant="outline" className="border-muted-foreground text-muted-foreground text-xs">
-                          {edu.year}
-                        </Badge>
-                      </div>
+                    <div className="p-2 flex-shrink-0" style={{ backgroundColor: `${GREEN}15` }}>
+                      <Award className="h-5 w-5" style={{ color: GREEN }} />
                     </div>
-                  </Card>
+                    <div>
+                      <h3
+                        className="text-xl font-semibold"
+                        style={{ fontFamily: "'Cormorant Garamond', serif", color: CHARCOAL }}
+                      >
+                        {edu.degree}
+                      </h3>
+                      <p className="text-sm mt-0.5" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>{edu.institution}</p>
+                      <span
+                        className="text-xs font-semibold uppercase tracking-wider mt-2 inline-block px-2 py-0.5"
+                        style={{ backgroundColor: `${GOLD}20`, color: GREEN, fontFamily: "'Lato', sans-serif" }}
+                      >
+                        {edu.year}
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Languages */}
-            <div>
-              <SectionBadge color="blue" label="LANGUAGES" />
-              <SectionHeading title="LANGUAGES" />
-              <div className="space-y-3">
-                {LANGUAGES.map((lang, i) => {
-                  const colors = ["blue", "magenta", "yellow", "blue"];
-                  const color = C[colors[i]];
-                  return (
-                    <Card
+            {/* Right column: Certifications + Languages */}
+            <div className="space-y-12">
+              <div>
+                <SectionLabel text="Credentials" />
+                <h2
+                  className="text-4xl mb-8 fade-in-up"
+                  style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+                >
+                  Certifications
+                </h2>
+                <div className="space-y-4">
+                  {CERTIFICATIONS.map((c, i) => (
+                    <div
                       key={i}
-                      className="p-5 bg-card/50 backdrop-blur-sm hover:scale-[1.02] transition-all duration-300"
-                      style={{ borderColor: `${color}30` }}
+                      className="p-5 bg-white border fade-in-up"
+                      style={{ borderColor: `${GOLD}30`, transitionDelay: `${i * 80}ms` }}
                     >
-                      <div className="flex items-center gap-3">
-                        <Globe className="h-5 w-5" style={{ color }} />
-                        <span className="font-bold text-white">{lang}</span>
-                      </div>
-                    </Card>
-                  );
-                })}
+                      <p className="font-semibold text-sm" style={{ color: CHARCOAL, fontFamily: "'Lato', sans-serif" }}>{c.name}</p>
+                      <p className="text-xs mt-1" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>{c.issuer} · {c.year}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <SectionLabel text="Communication" />
+                <h2
+                  className="text-4xl mb-8 fade-in-up"
+                  style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+                >
+                  Languages
+                </h2>
+                <div className="flex flex-wrap gap-3">
+                  {LANGUAGES.map((lang, i) => (
+                    <span
+                      key={i}
+                      className="px-4 py-2 text-sm font-semibold border"
+                      style={{
+                        borderColor: `${GOLD}50`,
+                        color: GREEN,
+                        fontFamily: "'Lato', sans-serif",
+                        backgroundColor: `${GOLD}10`,
+                      }}
+                    >
+                      {lang}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── CONTACT CTA ─────────────────────────────────────────────────────── */}
-      <section id="contact" className="py-24 relative overflow-hidden">
+      {/* ── CONTACT CTA ───────────────────────────────────────────────────── */}
+      <section id="contact" className="py-28 relative overflow-hidden" style={{ backgroundColor: "white" }}>
         <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: "url(https://d2xsxph8kpxj0f.cloudfront.net/310519663316708108/fXaBcEaSTfhVaUWCuoEzxk/hero-bg_24ad6063.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+          className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: `url(${HERO_BG})`, backgroundSize: "cover", backgroundPosition: "center" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="container relative z-10 text-center">
-          <SectionBadge color="blue" label="GET IN TOUCH" />
-          <h2 className="text-5xl font-bold text-white mb-4">LET'S CONNECT</h2>
-          <p className="text-xl text-muted-foreground max-w-xl mx-auto mb-10">
-            Open to new opportunities, speaking engagements, mentorship, and collaboration on privacy and cloud initiatives.
+          <SectionLabel text="Let's Connect" />
+          <h2
+            className="text-6xl mb-6 fade-in-up"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: GREEN }}
+          >
+            Open to New Opportunities
+          </h2>
+          <p className="text-lg max-w-xl mx-auto mb-12 fade-in-up" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>
+            Available for senior TPM and product leadership roles, speaking engagements, mentorship, and collaboration on privacy and cloud initiatives.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <a href="mailto:contact@silviadoomra.com">
-              <Button size="lg" className="bg-[#0066FF] hover:bg-[#0066FF]/90 text-white font-bold">
-                <Mail className="mr-2 h-5 w-5" /> EMAIL ME
-              </Button>
+          <div className="flex flex-wrap gap-4 justify-center fade-in-up">
+            <a
+              href="mailto:contact@silviadoomra.com"
+              className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: GREEN, fontFamily: "'Lato', sans-serif" }}
+            >
+              <Mail className="h-4 w-4" /> Email Me
             </a>
-            <a href="https://www.linkedin.com/in/silviadoomra/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="font-bold" style={{ borderColor: C.magenta, color: C.magenta }}>
-                <ExternalLink className="mr-2 h-5 w-5" /> LINKEDIN
-              </Button>
+            <a
+              href="https://www.linkedin.com/in/silviadoomra/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-80"
+              style={{ border: `1.5px solid ${GOLD}`, color: GREEN, fontFamily: "'Lato', sans-serif" }}
+            >
+              <ExternalLink className="h-4 w-4" /> LinkedIn
             </a>
-            <a href="https://silviadoomra.com" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="font-bold" style={{ borderColor: C.yellow, color: C.yellow }}>
-                <Globe className="mr-2 h-5 w-5" /> WEBSITE
-              </Button>
+            <a
+              href="https://silviadoomra.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-3 text-sm font-bold uppercase tracking-widest transition-all hover:opacity-80"
+              style={{ border: `1.5px solid ${GREEN}`, color: GREEN, fontFamily: "'Lato', sans-serif" }}
+            >
+              <Globe className="h-4 w-4" /> Website
             </a>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────────────────────── */}
-      <footer className="py-10 border-t border-border">
+      {/* ── FOOTER ────────────────────────────────────────────────────────── */}
+      <footer className="py-8 border-t" style={{ borderColor: `${GOLD}25`, backgroundColor: CREAM }}>
         <div className="container flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">© 2026 Silvia Doomra. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="mailto:contact@silviadoomra.com" className="text-muted-foreground hover:text-white transition-colors">
-              <Mail className="h-5 w-5" />
+          <p className="text-sm" style={{ color: MUTED, fontFamily: "'Lato', sans-serif" }}>
+            © 2026 Silvia Doomra. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6">
+            <a href="mailto:contact@silviadoomra.com" className="transition-opacity hover:opacity-60" style={{ color: MUTED }}>
+              <Mail className="h-4 w-4" />
             </a>
-            <a href="tel:425-802-0705" className="text-muted-foreground hover:text-white transition-colors">
-              <Phone className="h-5 w-5" />
+            <a href="tel:425-802-0705" className="transition-opacity hover:opacity-60" style={{ color: MUTED }}>
+              <Phone className="h-4 w-4" />
             </a>
-            <a href="https://www.linkedin.com/in/silviadoomra/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-white transition-colors">
-              <ExternalLink className="h-5 w-5" />
+            <a href="https://www.linkedin.com/in/silviadoomra/" target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: MUTED }}>
+              <ExternalLink className="h-4 w-4" />
             </a>
           </div>
         </div>
